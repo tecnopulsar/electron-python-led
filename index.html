@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contador Infinito</title>
+</head>
+<body>
+  <h1>Contador Infinito</h1>
+  <button id="start-counter">Iniciar contador</button>
+  <p id="counter">Minutos transcurridos: 0</p>
+  <button id="close-btn">Cerrar</button>
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    // Botón para cerrar la aplicación
+    document.getElementById('close-btn').addEventListener('click', () => {
+      ipcRenderer.send('close-app');
+    });
+
+    // Botón para iniciar el contador
+    document.getElementById('start-counter').addEventListener('click', () => {
+      ipcRenderer.send('run-python');
+    });
+
+    // Escuchar el evento cuando se cumple un minuto
+    ipcRenderer.on('minuto-cumplido', (event, minutos) => {
+      console.log("Evento recibido en el frontend:", minutos); // Debug: Verificar si el evento llega
+      const counterElement = document.getElementById('counter');
+      counterElement.textContent = `Minutos transcurridos: ${minutos}`;
+    });
+  </script>
+</body>
+</html>
